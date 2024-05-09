@@ -1,0 +1,117 @@
+---
+title: "Practica de uso dply"
+format: html
+editor: visual
+toc: true
+theme: Sketchy
+---
+
+# Introducción
+
+Este docuento contiene algunos ejemplos de uso de las funciones del paquete DPLY de [Tidyverse](https://www.tidyverse.org/)
+
+# carga de paquetes
+
+```{r}
+#| label: carga de paquetes
+#| message: false
+#| warning: false
+
+library(tidyverse)
+library(palmerpenguins)
+library(knitr)
+```
+
+# Carga de datos
+
+```{r}
+#| label: carga-datos
+#| message: false
+#| warning: false
+
+delitos_2023 <- read_csv(
+  "estadisticaspoliciales2023.csv",
+  locale = locale(encoding = "WINDOWS-1252")
+)
+```
+
+# Select()
+
+## Ejemplo
+
+```{r}
+#| label: select-01
+
+# select(penguis, species, bill_length_mm, sex)
+
+penguins |> select( species, bill_length_mm, sex) |> 
+  head(8) |>
+  kable()
+```
+
+## Ejemplo 2
+
+```{r}
+#| label: select-02
+
+penguins |> 
+  select(
+    especie = species,
+    longitud_pico_mm = bill_length_mm,
+    sex
+  ) |>
+   head(8) |>
+  kable()
+```
+
+# filter()
+
+## Ejemplo 1
+
+```{r}
+penguins |> 
+  select(
+    species, island, sex) |>
+  filter(species == "Adelie") |>
+  filter(sex == "male") |>
+  filter(island == "Torgersen") |>
+  kable()
+```
+
+## Ejemplo 2
+
+```{r}
+#| label: filter-02
+
+# Delitos del cvantón de Montes de Oca 
+delitos_2023 |>
+  select(Delito,SubDelito, Victima, SubVictima, Canton, Distrito)|>
+  filter(Canton == "MONTES DE OCA") |>
+  kable()
+
+```
+
+## Ejemplo 3
+
+```{r}
+#| label: filter-03
+#| # Asaltos comentidos en San Pedro de Montes de Oca
+
+delitos_2023 |>
+  select(Delito, SubDelito, Victima, SubVictima, Canton, Distrito) |>
+  filter(Delito == "ASALTO" & Distrito == "SAN PEDRO" & Canton == "MONTES DE OCA") |> kable()
+
+```
+
+## Ejemplo 4
+
+```{r}
+#| Label: filter-04
+
+# Asalos y homicidios cometidos en San Pedro de Montes de Oca
+delitos_2023 |>
+  select(Delito, SubDelito, Victima, SubVictima, Canton, Distrito) |>
+  filter(Distrito == "SAN PEDRO" & Canton == "MONTES DE OCA" & Delito == "ASALTO" | Delito == "HOMICIDIOS" ) |> kable()
+  
+
+```
